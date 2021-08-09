@@ -2,23 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//#define USE_RIGID_BODY
+
 public class PlayerMovement : MonoBehaviour
 {
     public float speed  = 20;
-    private Vector3 motion;
-    private Rigidbody rb;
+    public float rotSpeed = 720;
 
+    private Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Here");
+        #if USE_RIGID_BODY
         rb = GetComponent<Rigidbody>();
+        #endif
     }
 
     // Update is called once per frame
     void Update()
     {
-        motion = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        rb.velocity = motion * speed;        
+        Vector3 movementDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        movementDirection.Normalize();
+
+        #if USE_RIGID_BODY
+            rb.velocity = movementDirection * speed;
+        #else
+            transform.Translate(movementDirection * speed * Time.deltaTime, Space.World);
+        #endif
+
+        //if (movementDirection != Vector3.Zero) {
+            Debug.Log("Here");
+            Quaternion toRot = Quaternion.LookRotation(movementDirection, Vector3.up);
+            transform.rotation = Quaternion.RotateTowards(transform.Rotation, toRot, rotSpeed * Time.deltaTime);
+        //}
     }
 }
