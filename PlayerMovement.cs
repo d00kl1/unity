@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed  = 20;
+    public float speed  = 5;
     public float rotSpeed = 720;
 
     private Rigidbody rb;
@@ -14,7 +14,6 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Here");
         #if USE_RIGID_BODY
         rb = GetComponent<Rigidbody>();
         #endif
@@ -32,10 +31,9 @@ public class PlayerMovement : MonoBehaviour
             transform.Translate(movementDirection * speed * Time.deltaTime, Space.World);
         #endif
 
-        //if (movementDirection != Vector3.Zero) {
-            Debug.Log("Here");
+        if (movementDirection != Vector3.zero) {
             Quaternion toRot = Quaternion.LookRotation(movementDirection, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.Rotation, toRot, rotSpeed * Time.deltaTime);
-        //}
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRot, rotSpeed * Time.deltaTime);
+        }
     }
 }
